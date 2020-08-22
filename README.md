@@ -365,3 +365,163 @@ class ManyController extends Controller
 - two foreach loops are created using these variables.
 - In every iteration of first foreach loop, we will print role name. Similarly, in the second foreach loop , system will print the role name in every iteration.
 - So, it was all about laravel many to many relationship tutorial with example.
+
+## Laravel 7 Database Seeder Example
+- In this Section, i will show you how to create database seeder in laravel 7 and what is command to create seeder and how to run that seeder in laravel 7. so you have to just follow few step get how it's done.
+- Laravel gives command to create seeder in laravel. so you can run following command to make seeder in laravel application.
+- Create Seeder Command:
+```
+php artisan make:seeder UserSeeder
+php artisan make:seeder RoleSeeder
+php artisan make:seeder UserRoleSeeder
+```
+- after run above commands, it will create three files `UserSeeder.php`, `RoleSeeder.php`, `UserRoleSeeder.php` on seeds folder. All seed classes are stored in the database/seeds directory.
+- Then you can write code of create admin user using model in laravel.
+
+- `database/seeds/AdminUserSeeder.php`
+```
+<?php
+
+use Illuminate\Database\Seeder;
+use App\User;
+
+class UserSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        User::create([
+            'name' => 'John',
+            'email' => 'John@gmail.com',
+            'password' => bcrypt('12345678'),
+        ]);
+        User::create([
+            'name' => 'Ronald',
+            'email' => 'Ronald@gmail.com',
+            'password' => bcrypt('12345678'),
+        ]);
+        User::create([
+            'name' => 'Gary',
+            'email' => 'Gary@gmail.com',
+            'password' => bcrypt('12345678'),
+        ]);
+    }
+}
+```
+- `database/seeds/RoleSeeder.php`
+```
+<?php
+
+use Illuminate\Database\Seeder;
+
+class RoleSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        App\Role::create([
+            'role_name' => 'Admin'
+        ]);
+
+        App\Role::create([
+            'role_name' => 'Editor'
+        ]);
+
+        App\Role::create([
+            'role_name' => 'Reader'
+        ]);
+    }
+}
+```
+`database/seeds/UserRoleSeeder.php`
+```
+<?php
+
+use Illuminate\Database\Seeder;
+use App\UserRole;
+class UserRoleSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        UserRole::create([
+            'user_id' => 1,
+            'role_id' => 1
+        ]);
+        UserRole::create([
+            'user_id' => 1,
+            'role_id' => 2
+        ]);
+        UserRole::create([
+            'user_id' => 2,
+            'role_id' => 3
+        ]);
+        UserRole::create([
+            'user_id' => 1,
+            'role_id' => 3
+        ]);
+        UserRole::create([
+            'user_id' => 3,
+            'role_id' => 3
+        ]);
+    }
+}
+```
+
+## Way 1: Run Single Seeder
+```
+php artisan db:seed --class=UserSeeder
+php artisan db:seed --class=RoleSeeder
+php artisan db:seed --class=UserRoleSeeder
+```
+
+##  Way 2: Run All Seeders
+- In this way, you have to declare your seeder in DatabaseSeeder class file. then you have to run single command to run all listed seeder class.
+- So can list as bellow:
+- `database/seeds/DatabaseSeeder.php`
+```
+<?php
+
+use Illuminate\Database\Seeder;
+
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $this->call(UserSeeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(UserRoleSeeder::class);
+    }
+}
+```
+- Now you need to run following command for run all listed seeder:
+`php artisan db:seed`
+
+#### If you want to rollback and rerun all migrations, and then reseed:
+- `$ php artisan migrate:refresh --seed`
+- The migrate:refresh --seed command is a shortcut to these 3 commands:
+```
+    $ php artisan migrate:reset     # rollback all migrations
+    $ php artisan migrate           # run migrations
+    $ php artisan db:seed           # run seeders
+```
+- Now i think you will understand how seeding is work and we have to use in our laravel app.
+- I hope it can help you...
+
